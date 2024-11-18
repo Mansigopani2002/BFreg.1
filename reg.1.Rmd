@@ -1,0 +1,79 @@
+---
+title: "Regression.1"
+output:
+  Mansi: default
+  html: default
+date: "2024-11-17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(readr)
+library(fpp)
+library(fpp2)
+library(forecast)
+library(readxl)
+library(ggplot2)
+
+
+Fuel_data <- read_csv("C:/Users/mansi gopani/downloads/Fuel_data.csv")
+head(Fuel_data)
+#Find an independent variable to predict your time-series (2 points)
+#When FUELCONSUMPTION is treated as an independent variable, it serves as a predictor for outcomes like COEMISSIONS (carbon emissions). Vehicles with higher fuel consumption generally emit more CO2, making FUELCONSUMPTION an explanatory factor for understanding variations in emissions. Increased fuel use directly correlates with higher emissions, regardless of other factors such as engine type or vehicle class.
+
+
+plot(Fuel_data$FUELCONSUMPTION,Fuel_data$ENGINESIZE,pch=19,col="red")
+
+lm1 <- lm(Fuel_data$FUELCONSUMPTION~Fuel_data$ENGINESIZE)
+
+plot(Fuel_data$FUELCONSUMPTION,Fuel_data$ENGINESIZE,pch=19,col="red")
+lines(Fuel_data$ENGINESIZE, lm1$fitted, col="blue")
+
+smoothScatter(Fuel_data$FUELCONSUMPTION,Fuel_data$ENGINESIZE)
+abline(lm1,col="brown",lwd=3)
+
+##summary
+summary(lm1)
+
+#show the interpretation of the model output:
+#regression model examines how engine size affects fuel consumption. Here's what it tells us:
+
+#When a vehicle has an engine size of 0 (hypothetical), it would consume about 7.18 units of fuel. This is the starting point for predictions.
+#For every 1-unit increase in engine size, fuel consumption increases by around 2.31 units. So, bigger engines mean more fuel is used.
+#The numbers are highly reliable because the p-values are extremely small, showing a strong and statistically significant relationship between engine size and fuel consumption.
+#The model does a good job of explaining the data, as it accounts for about 74% of the variation in fuel consumption based on engine size.
+#On average, the model's predictions are off by about 1.7 units, which is reasonably accurate for this kind of analysis.
+#In simple terms, vehicles with larger engines tend to use more fuel, and this model gives us a clear and reliable way to understand that relationship.
+
+
+##residual analysis
+# Histogram of residuals
+hist(residuals(lm1), main="Histogram of Residuals", xlab="Residuals", col="green")
+
+# Residuals vs Fitted plot to check homoscedasticity
+plot(lm1$fitted.values, residuals(lm1), main="Residuals vs Fitted", 
+     xlab="Fitted Values", ylab="Residuals", pch=19, col="pink")
+abline(h=0, col="red",lwd=2)
+plot(lm1)
+#The residuals are mostly centered around 0, showing the model predicts reasonably well, though some outliers exist.  
+#The residuals vs. fitted plot suggests no major patterns, but there’s a slight increase in spread with larger fitted values, indicating possible heteroscedasticity.  
+#The Q-Q plot confirms the residuals are mostly normally distributed, with minor deviations in the tails.  
+#The scale-location plot shows increasing variance in residuals for higher fitted values, indicating inconsistent error spread.  #The residuals vs. leverage plot highlights a few influential points (e.g., 216, 208) that might need further investigation.
+
+
+#
+
+```
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
